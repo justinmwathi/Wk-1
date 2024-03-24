@@ -1,50 +1,84 @@
-// Define the NHIF contribution rates based on salary
+// Define KRA tax rates
+
+const kraTaxRates = [
+
+  { threshold: 0, rate: 0 },
+
+  { threshold: 24000, rate: 0.1 },
+
+  { threshold: 32333, rate: 0.15 },
+
+  { threshold: 45667, rate: 0.2 },
+
+  { threshold: Infinity, rate: 0.3 }
+
+];
+
+
+// Define NHIF rates
 
 const nhifRates = [
 
-    { minSalary: 0, maxSalary: 5999, contribution: 150 },
-  
-    { minSalary: 6000, maxSalary: 7999, contribution: 300 },
-  
-    { minSalary: 8000, maxSalary: 11999, contribution: 400 },
-  
-    { minSalary: 12000, maxSalary: 14999, contribution: 500 },
-  
-    { minSalary: 15000, maxSalary: 19999, contribution: 600 },
-  
-    { minSalary: 20000, maxSalary: 24999, contribution: 750 },
-  
-    { minSalary: 25000, maxSalary: 29999, contribution: 850 },
-  
-    { minSalary: 30000, maxSalary: 34999, contribution: 900 },
-  
-    { minSalary: 35000, maxSalary: 39999, contribution: 950 },
-  
-    { minSalary: 40000, maxSalary: 44999, contribution: 1000 },
-  
-    { minSalary: 45000, maxSalary: 49999, contribution: 1100 },
-  
-    { minSalary: 50000, maxSalary: 59999, contribution: 1200 },
-  
-    { minSalary: 60000, maxSalary: 69999, contribution: 1300 },
-  
-    { minSalary: 70000, maxSalary: 79999, contribution: 1400 },
-  
-    { minSalary: 80000, maxSalary: 89999, contribution: 1500 },
-  
-    { minSalary: 90000, maxSalary: 99999, contribution: 1600 },
-  
-    { minSalary: 100000, maxSalary: Infinity, contribution: 1700 }
-  
-  ];
+  { min: 0, max: 5999, rate: 150 },
 
-  let nhifDeduction = 0;
+  { min: 6000, max: 7999, rate: 300 },
 
-  for (let i = 0; i < nhifRates.length; i++) {
+  { min: 8000, max: 11999, rate: 400 },
 
-    if (grossSalary > nhifRates[i].minSalary && grossSalary <= nhifRates[i].maxSalary) {
+  { min: 12000, max: 14999, rate: 500 },
 
-      nhifDeduction = nhifRates[i].contribution;
+  { min: 15000, max: 19999, rate: 600 },
+
+  { min: 20000, max: 24999, rate: 750 },
+
+  { min: 25000, max: 29999, rate: 850 },
+
+  { min: 30000, max: 34999, rate: 900 },
+
+  { min: 35000, max: 39999, rate: 950 },
+
+  { min: 40000, max: 44999, rate: 1000 },
+
+  { min: 45000, max: 49999, rate: 1100 },
+
+  { min: 50000, max: 59999, rate: 1200 },
+
+  { min: 60000, max: 69999, rate: 1300 },
+
+  { min: 70000, max: 79999, rate: 1400 },
+
+  { min: 80000, max: 89999, rate: 1500 },
+
+  { min: 90000, max: 99999, rate: 1600 },
+
+  { min: 100000, max: Infinity, rate: 1700 }
+
+];
+
+
+// Define NSSF rate
+
+const nssfRate = 0.06;
+
+
+// Function to calculate net salary
+
+function calculateNetSalary(basicSalary, benefits) {
+
+  // Calculate gross salary
+
+  const grossSalary = basicSalary + benefits;
+
+
+  // Calculate KRA tax
+
+  let kraTax = 0;
+
+  for (let i = 0; i < kraTaxRates.length - 1; i++) {
+
+    if (grossSalary > kraTaxRates[i].threshold && grossSalary <= kraTaxRates[i + 1].threshold) {
+
+      kraTax = Math.floor((grossSalary - kraTaxRates[i].threshold) * kraTaxRates[i + 1].rate);
 
       break;
 
@@ -53,33 +87,55 @@ const nhifRates = [
   }
 
 
-  // Define the NSSF pension contribution rates based on pensionable wages
+  // Calculate NHIF deduction
 
-const nssfRates = {
+  let nhifDeduction = 0;
 
-    employeeRate: 0.06,
-  
-    employerRate: 0.06,
- //Using Tier 2 pensionable pay from February 2024 onwards. 
-    upperLimit: 36000,
-  
-    lowerLimit: 7001,
-  
-  };
+  for (let i = 0; i < nhifRates.length; i++) {
 
-  // Calculate the NSSF contribution for an employee and employer based on pensionable wages
+    if (grossSalary > nhifRates[i].min && grossSalary <= nhifRates[i].max) {
 
-function calculateNssfContribution(pensionableWages) {
+      nhifDeduction = nhifRates[i].rate;
 
-    const employeeContribution = Math.min(pensionableWages * nssfRates.employeeRate, nssfRates.upperLimit);
-  
-    const employerContribution = Math.min(pensionableWages * nssfRates.employerRate, nssfRates.upperLimit);
-  
-    return { employee: employeeContribution, employer: employerContribution };
-  
+      break;
+
+    }
+
   }
 
-  //KRA tax rates
+
+  // Calculate NSSF deduction
+
+  const nssfDeduction = grossSalary * nssfRate;
 
 
+  // Calculate net salary
 
+const netSalary = Math.floor(grossSalary - kraTax - nhifDeduction - nssfDeduction);
+
+
+  return {
+
+    grossSalary,
+
+    kraTax,
+
+    nhifDeduction,
+
+    nssfDeduction,
+
+    netSalary
+
+  };
+
+}
+
+
+// Example usage using Programiz console
+
+const basicSalary = 100000;
+
+const benefits = 20000;
+
+const result = calculateNetSalary(basicSalary, benefits);
+console.log(result)
