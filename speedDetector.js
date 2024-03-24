@@ -1,5 +1,9 @@
 //Code challenge 2
+const prompt=require('prompt-sync')()
 
+let userInput=prompt("Car speed:")
+const carSpeed=speedDetector(userInput);
+console.log(`Status:${carSpeed}`);
 //Create a function called speedDetector
 function speedDetector(speed){
     //create variable speedLimit which stores 70
