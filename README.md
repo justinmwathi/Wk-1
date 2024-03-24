@@ -21,4 +21,8 @@ The above program is designed to ensure proper observation of traffic rules.The 
 
 
 # CODE CHALLENGE 3
+## NET SALARY GENERATOR.
+The program's  major task is to calculate an individual’s Net Salary by getting the inputs of basic salary and benefits. Calculate the payee (i.e. Tax), NHIFDeductions, NSSFDeductions, gross salary, and net salary.
+
+
 
