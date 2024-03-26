@@ -1,9 +1,6 @@
 //Code challenge 1
-const prompt=require('prompt-sync')()
 
-let userInput=prompt("Please enter student's marks:")
-const studentMarks=studentGradeGenerator(userInput);
-console.log(`Grade:${studentMarks}`);
+
 //create a function that prompts a user to input student marks.
 function studentGradeGenerator(userInput){
     //provide a conditional and if the condition is met as set return is expected.
